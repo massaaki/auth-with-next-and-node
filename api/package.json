@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main/server.ts",
-    "dev": "ts-node-dev src/main/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules --respawn  src/main/server.ts",
     "test": "jest --passWithNoTests",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli"
   },
