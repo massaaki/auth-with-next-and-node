@@ -6,6 +6,6 @@ export type CreateAccountType = {
   password: string;
 };
 
-export interface ICreateaccount {
+export interface ICreateAccount {
   create: (account: CreateAccountType) => Promise<IAccount>;
 }
