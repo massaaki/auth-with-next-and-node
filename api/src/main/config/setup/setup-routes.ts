@@ -8,7 +8,6 @@ export default (app: Express): void => {
 
   readdirSync(`${__dirname}/../../routes`).map(async (file) => {
     if (!file.includes(".test.")) {
-      console.log(file);
       (await import(`../../routes/${file}`)).default(router);
     }
   });

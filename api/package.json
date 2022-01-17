@@ -7,7 +7,8 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main/server.ts",
     "dev": "ts-node-dev src/main/server.ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
