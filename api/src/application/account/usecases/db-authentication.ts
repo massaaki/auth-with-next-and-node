@@ -31,6 +31,7 @@ export class DbAuthentication implements IAuthentication {
 
   async auth(authentication: AuthenticationType): Promise<ISession> {
     // try to find account by email
+
     const account = await this.loadAccountByEmailRepository.loadByEmail(
       authentication.email
     );

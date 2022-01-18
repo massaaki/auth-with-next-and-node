@@ -41,12 +41,14 @@ export class AccountPostgresRepository
     const response = await this.accountRepository.findOne({
       where: { email },
     });
-
-    return {
-      id: response.id,
-      email: response.email,
-      name: response.name,
-      password: response.password,
-    };
+    if (response) {
+      return {
+        id: response.id,
+        email: response.email,
+        name: response.name,
+        password: response.password,
+      };
+    }
+    return null;
   }
 }

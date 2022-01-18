@@ -8,17 +8,19 @@ export class LoginController implements IController {
   async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
       const { email, password } = httpRequest.body;
-      const { account, token, refresh_token } = await this.authentication.auth({
+      const response = await this.authentication.auth({
         email,
         password,
       });
 
-      if (!account) {
+      if (!response) {
         return {
           statusCode: 401,
           body: "Unauthorized",
         };
       }
+
+      const { account, token, refresh_token } = response;
       return {
         statusCode: 200,
         body: {
