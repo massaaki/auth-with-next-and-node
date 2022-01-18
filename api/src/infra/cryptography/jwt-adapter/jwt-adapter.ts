@@ -20,7 +20,7 @@ export class JwtAdapter implements IEncrypter, IDecrypter {
     return accessToken;
   }
 
-  async decrypt(token: string): Promise<string> {
+  async decrypt(token: string): Promise<any> {
     const value: any = jwt.verify(token, this.secret);
 
     return value;

@@ -56,7 +56,7 @@ export class DbAuthentication implements IAuthentication {
         // create refresh token
         await this.createAccessTokenRepository.create(
           new Date(),
-          accessToken,
+          refreshToken,
           account.id
         );
 
