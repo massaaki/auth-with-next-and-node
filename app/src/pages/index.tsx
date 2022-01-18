@@ -1,6 +1,5 @@
-export default function Home() {
-  return (
+import { Login } from '../templates/Login'
 
-    <h1>App</h1>
-  )
+export default function HomePage() {
+  return <Login />
 }
