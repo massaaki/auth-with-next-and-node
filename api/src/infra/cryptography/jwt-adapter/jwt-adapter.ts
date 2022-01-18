@@ -9,8 +9,13 @@ export class JwtAdapter implements IEncrypter, IDecrypter {
     this.secret = secret;
   }
 
-  async encrypt(value: string): Promise<string> {
-    const accessToken = await jwt.sign({ id: value }, this.secret);
+  async encrypt(value: string, expiresIn: Date): Promise<string> {
+    const currentDate = new Date();
+    const diffInMs = expiresIn.getTime() - currentDate.getTime();
+
+    const accessToken = await jwt.sign({ id: value }, this.secret, {
+      expiresIn: diffInMs,
+    });
 
     return accessToken;
   }
