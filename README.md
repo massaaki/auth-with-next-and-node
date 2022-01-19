@@ -1,6 +1,6 @@
 <h1>Full stack boilerplate</h1>
 <p>This is a boilerplate created with authentication implemented with JWT refresh token strategy in front-end and back-end</p>
-
+<img src="https://github.com/massaaki/massaaki/blob/main/images/full-stack-boilerplate.png"/>
 <h2>Backend</h2>
 <p><a href="https://github.com/massaaki/auth-with-next-and-node/tree/main/api">Access backend application</a></p>
 <p>Built with Node.js + typescript + express and using clean architecture concepts trying to ensure SOLID principes</p>
