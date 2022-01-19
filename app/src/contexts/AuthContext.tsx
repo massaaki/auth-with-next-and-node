@@ -1,6 +1,8 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import Router from 'next/router'
-import { setCookie } from 'nookies';
+import { setCookie, parseCookies } from 'nookies';
+import { decode } from 'jsonwebtoken';
+
 
 import { api } from "../services/api";
 
@@ -36,6 +38,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>(null);
   const isAuthenticated = !!user;
 
+  useEffect(() => {
+    const { 'authproject.token': token } = parseCookies();
+    if (token) {
+      const { email, exp } = decode(token) as any;
+      const expDate = new Date((exp as number) * 1000);
+      const currentDate = new Date();
+      const expired = expDate.getTime() - currentDate.getTime() < 0 ? true : false;
+
+      if (!expired) {
+        setUser({
+          email: email as string
+        });
+      } else {
+        setUser(null);
+        Router.push('/');
+      }
+    }
+
+  }, [])
+
+
   async function signIn({ email, password }: SignInCredentails) {
     try {
       const response = await api.post('login', { email, password });
@@ -54,6 +77,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser({
         email
       })
+
+      //updating token in header
+      api.defaults.headers['Authorization'] = `Bearer ${token}`;
 
       Router.push('/dashboard');
 
