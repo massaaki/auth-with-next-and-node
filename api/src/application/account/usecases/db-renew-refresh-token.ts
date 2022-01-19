@@ -30,7 +30,6 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
     private readonly deleteAccountsTokensRepository: IDeleteAccountsTokensByIdRepository
   ) {}
   async renew(refreshToken: string): Promise<ISession> {
-    console.log("DbRenewRefreshToken 1", refreshToken);
     const { email } = await this.decrypter.decrypt(refreshToken);
 
     const account = await this.loadAccountByEmailRepository.loadByEmail(email);
@@ -39,7 +38,6 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
       await this.loadAccountsTokensByRefreshTokens.loadByRefreshToken(
         refreshToken
       );
-    console.log("DbRenewRefreshToken 2", accountsTokens);
 
     if (!accountsTokens) {
       throw new Error("Refresh token does not exists!");
@@ -54,8 +52,6 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
       createExpiresTime({ ref: "minutes", value: 1 })
     );
 
-    console.log("DbRenewRefreshToken 3", newAccessToken);
-
     const refreshTokenExpiresdate = createExpiresTime({
       ref: "day",
       value: 1,
@@ -66,16 +62,12 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
       refreshTokenExpiresdate
     );
 
-    console.log("DbRenewRefreshToken 4", newRefreshToken);
-
     // create refresh token
     await this.createAccessTokenRepository.create(
       refreshTokenExpiresdate,
       newRefreshToken,
       account.id
     );
-
-    console.log("DbRenewRefreshToken 5");
 
     return {
       token: newAccessToken,

@@ -7,11 +7,8 @@ export class RefreshTokenController implements IController {
 
   async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
-      console.log("RefreshTokenController: 1");
       const { refresh_token } = httpRequest.body;
-      console.log("refresh_token", refresh_token);
       const response = await this.renewRefreshToken.renew(refresh_token);
-      console.log("RefreshTokenController: 2");
       return {
         statusCode: 200,
         body: response,
