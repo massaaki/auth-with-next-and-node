@@ -23,3 +23,7 @@
   <li>Created Auth context to manage user credentials</li>
   <li>Configured interceptors to deal with expires token and queue requests to be resolved after refresh token if needed</li>
 </ul>
+
+
+<h3>License</h3>
+<p>This boilerplate is <a href="https://github.com/massaaki/massaaki/blob/main/license/mit">MIT licensed</a></p>
