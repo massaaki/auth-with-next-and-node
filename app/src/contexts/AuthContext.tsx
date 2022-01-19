@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import Router from 'next/router'
-import { setCookie, parseCookies } from 'nookies';
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
 import { decode } from 'jsonwebtoken';
 
 
@@ -27,6 +27,12 @@ type AuthProviderProps = {
   children: ReactNode;
 }
 
+export function signOut() {
+  destroyCookie(undefined, 'authproject.token');
+  destroyCookie(undefined, 'authproject.refreshToken');
+  Router.push('/');
+}
+
 export const AuthContext = createContext({} as AuthContextData);
 
 type LoginResponse = {
@@ -41,18 +47,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const { 'authproject.token': token } = parseCookies();
     if (token) {
-      const { email, exp } = decode(token) as any;
-      const expDate = new Date((exp as number) * 1000);
-      const currentDate = new Date();
-      const expired = expDate.getTime() - currentDate.getTime() < 0 ? true : false;
+      const decoded = decode(token) as any;
+      if (decoded?.email && decoded?.exp) {
+        const { email, exp } = decoded;
+        const expDate = new Date((exp as number) * 1000);
+        const currentDate = new Date();
+        const expired = expDate.getTime() - currentDate.getTime() < 0 ? true : false;
 
-      if (!expired) {
+
         setUser({
           email: email as string
         });
+
       } else {
-        setUser(null);
-        Router.push('/');
+        signOut();
       }
     }
 
