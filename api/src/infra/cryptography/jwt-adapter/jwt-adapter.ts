@@ -21,15 +21,19 @@ export class JwtAdapter implements IEncrypter, IDecrypter {
   }
 
   async decrypt(token: string): Promise<any> {
-    const value: any = jwt.verify(token, this.secret);
-    if (value) {
-      const { exp } = value;
-      const expDate = new Date((exp as number) * 1000);
-      const currentDate = new Date();
-      const expired = expDate.getTime() - currentDate.getTime() < 0;
-      if (!expired) {
+    console.log("decrypt 1", token);
+    try {
+      const value: any = jwt.verify(token, this.secret);
+      // console.log("decrypt 2");
+      if (value) {
+        // const { exp } = value;
+        // const expDate = new Date((exp as number) * 1000);
+        // const currentDate = new Date();
+        // const expired = expDate.getTime() - currentDate.getTime() < 0;
         return value;
       }
+    } catch {
+      return null;
     }
     return null;
   }

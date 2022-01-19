@@ -11,8 +11,11 @@ export class AuthMiddleware implements IMiddleware {
       const [, accessToken] = (
         httpRequest.headers?.authorization as string
       ).split(" ");
+      console.log("1");
       if (accessToken) {
+        console.log("2", accessToken);
         const account = await this.loadAccountbyToken.load(accessToken);
+        console.log("3", account);
         if (account) {
           // eslint-disable-next-line no-param-reassign
 
@@ -22,9 +25,10 @@ export class AuthMiddleware implements IMiddleware {
           };
         }
       }
+      console.log("4");
       return {
         statusCode: 403,
-        body: {},
+        body: { message: "token.expired" },
       };
     } catch (error) {
       return {

@@ -1,5 +1,6 @@
 import { ICreateAccessTokenRepository } from "@/application/protocols/account/create-access-token-repository";
 import { IDeleteAccountsTokensByIdRepository } from "@/application/protocols/account/delete-accounts-tokens-by-id-repository";
+import { ILoadAccountByEmailRepository } from "@/application/protocols/account/load-account-by-email-repository";
 import { ILoadAccountsTokensByRefreshTokenRepository } from "@/application/protocols/account/load-accounts-tokens-by-refresh-token-repository";
 import { IDecrypter } from "@/application/protocols/cryptography/decrypter";
 import { IEncrypter } from "@/application/protocols/cryptography/encrypter";
@@ -21,6 +22,7 @@ const createExpiresTime = ({ ref, value }: setExpiresTimeProps) => {
 
 export class DbRenewRefreshToken implements IRenewRefreshToken {
   constructor(
+    private readonly loadAccountByEmailRepository: ILoadAccountByEmailRepository,
     private readonly loadAccountsTokensByRefreshTokens: ILoadAccountsTokensByRefreshTokenRepository,
     private readonly encrypter: IEncrypter,
     private readonly decrypter: IDecrypter,
@@ -28,12 +30,16 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
     private readonly deleteAccountsTokensRepository: IDeleteAccountsTokensByIdRepository
   ) {}
   async renew(refreshToken: string): Promise<ISession> {
-    const { id } = await this.decrypter.decrypt(refreshToken);
+    console.log("DbRenewRefreshToken 1", refreshToken);
+    const { email } = await this.decrypter.decrypt(refreshToken);
+
+    const account = await this.loadAccountByEmailRepository.loadByEmail(email);
 
     const accountsTokens =
       await this.loadAccountsTokensByRefreshTokens.loadByRefreshToken(
         refreshToken
       );
+    console.log("DbRenewRefreshToken 2", accountsTokens);
 
     if (!accountsTokens) {
       throw new Error("Refresh token does not exists!");
@@ -44,26 +50,32 @@ export class DbRenewRefreshToken implements IRenewRefreshToken {
 
     // create access token
     const newAccessToken = await this.encrypter.encrypt(
-      id,
-      createExpiresTime({ ref: "minutes", value: 15 })
+      email,
+      createExpiresTime({ ref: "minutes", value: 1 })
     );
 
+    console.log("DbRenewRefreshToken 3", newAccessToken);
+
     const refreshTokenExpiresdate = createExpiresTime({
-      ref: "minutes",
-      value: 60,
+      ref: "day",
+      value: 1,
     });
 
     const newRefreshToken = await this.encrypter.encrypt(
-      id,
+      email,
       refreshTokenExpiresdate
     );
+
+    console.log("DbRenewRefreshToken 4", newRefreshToken);
 
     // create refresh token
     await this.createAccessTokenRepository.create(
       refreshTokenExpiresdate,
       newRefreshToken,
-      id
+      account.id
     );
+
+    console.log("DbRenewRefreshToken 5");
 
     return {
       token: newAccessToken,

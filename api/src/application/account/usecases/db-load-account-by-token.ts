@@ -11,7 +11,9 @@ export class DbLoadAccountByToken implements ILoadAccountByToken {
   ) {}
 
   async load(accessToken: string): Promise<IAccount> {
+    console.log("DbLoadAccountByToken 1");
     const response = await this.decrypter.decrypt(accessToken);
+    console.log("DbLoadAccountByToken 2");
     if (response) {
       const { email } = response;
       const account = await this.loadAccountByEmailRepository.loadByEmail(

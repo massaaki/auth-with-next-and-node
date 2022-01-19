@@ -47,16 +47,21 @@ export class DbAuthentication implements IAuthentication {
         // create access token
         const accessToken = await this.encrypter.encrypt(
           account.email,
-          createExpiresTime({ ref: "minutes", value: 10 })
-        );
-        const refreshToken = await this.encrypter.encrypt(
-          account.email,
-          createExpiresTime({ ref: "minutes", value: 10 })
+          createExpiresTime({ ref: "minutes", value: 1 })
         );
 
+        const refreshTokenExpiresdate = createExpiresTime({
+          ref: "day",
+          value: 1,
+        });
+
+        const refreshToken = await this.encrypter.encrypt(
+          account.email,
+          refreshTokenExpiresdate
+        );
         // create refresh token
         await this.createAccessTokenRepository.create(
-          new Date(),
+          refreshTokenExpiresdate,
           refreshToken,
           account.id
         );

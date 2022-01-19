@@ -9,6 +9,7 @@ export class RefreshTokenController implements IController {
     try {
       console.log("RefreshTokenController: 1");
       const { refresh_token } = httpRequest.body;
+      console.log("refresh_token", refresh_token);
       const response = await this.renewRefreshToken.renew(refresh_token);
       console.log("RefreshTokenController: 2");
       return {
