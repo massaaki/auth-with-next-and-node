@@ -14,7 +14,7 @@ type setExpiresTimeProps = {
 };
 
 const createExpiresTime = ({ ref, value }: setExpiresTimeProps) => {
-  const timeRef = ref === "minutes" ? 60000 : 6000 * 60 * 24;
+  const timeRef = ref === "minutes" ? 1000 * 60 : 6000 * 60 * 24;
   const totalTimeInMillisecondstoAdd = timeRef * value;
   const current = new Date();
 
@@ -46,12 +46,12 @@ export class DbAuthentication implements IAuthentication {
       if (isValid) {
         // create access token
         const accessToken = await this.encrypter.encrypt(
-          account.id,
-          createExpiresTime({ ref: "minutes", value: 15 })
+          account.email,
+          createExpiresTime({ ref: "minutes", value: 1 })
         );
         const refreshToken = await this.encrypter.encrypt(
-          account.id,
-          createExpiresTime({ ref: "minutes", value: 60 })
+          account.email,
+          createExpiresTime({ ref: "minutes", value: 10 })
         );
 
         // create refresh token

@@ -13,8 +13,8 @@ export class JwtAdapter implements IEncrypter, IDecrypter {
     const currentDate = new Date();
     const diffInMs = expiresIn.getTime() - currentDate.getTime();
 
-    const accessToken = await jwt.sign({ id: value }, this.secret, {
-      expiresIn: diffInMs,
+    const accessToken = await jwt.sign({ email: value }, this.secret, {
+      expiresIn: diffInMs / 1000,
     });
 
     return accessToken;
