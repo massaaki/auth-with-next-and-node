@@ -1,6 +1,9 @@
 import { createContext, ReactNode, useState } from "react";
 import Router from 'next/router'
+import { setCookie } from 'nookies';
+
 import { api } from "../services/api";
+
 
 
 type User = {
@@ -24,7 +27,10 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext({} as AuthContextData);
 
-
+type LoginResponse = {
+  token: string;
+  refresh_token: string;
+}
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>(null);
@@ -33,7 +39,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signIn({ email, password }: SignInCredentails) {
     try {
       const response = await api.post('login', { email, password });
-      console.log('response..:', response);
+      const { token, refresh_token } = response.data as LoginResponse
+
+      setCookie(undefined, 'authproject.token', token, {
+        maxAge: 60 * 60 * 24 * 30, //30 days
+        path: '/', //paths that will have this cookie information
+      });
+      setCookie(undefined, 'authproject.refreshToken', refresh_token, {
+        maxAge: 60 * 60 * 24 * 30, //30 days
+        path: '/', //paths that will have this cookie information
+      });
+
 
       setUser({
         email
