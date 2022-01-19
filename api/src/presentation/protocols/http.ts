@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+type UserType = {
+  id: string;
+  email: string;
+};
+
 export interface IHttpRequest {
-  headers?: number;
+  user?: UserType;
+  headers?: any;
   body?: any;
 }
 

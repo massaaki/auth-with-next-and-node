@@ -1,5 +1,5 @@
 type DecrypterPayloadType = {
-  id: string;
+  email: string;
 };
 
 export interface IDecrypter {

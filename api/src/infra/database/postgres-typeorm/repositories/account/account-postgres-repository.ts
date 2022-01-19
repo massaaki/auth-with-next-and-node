@@ -2,6 +2,7 @@ import { getRepository, Repository } from "typeorm";
 
 import { ICreateAccountRepository } from "@/application/protocols/account/create-account-repository";
 import { ILoadAccountByEmailRepository } from "@/application/protocols/account/load-account-by-email-repository";
+import { IDecrypter } from "@/application/protocols/cryptography/decrypter";
 import { IAccount } from "@/domain/entities/account";
 import { CreateAccountType } from "@/domain/usecases/account/create-account";
 
@@ -12,9 +13,7 @@ export class AccountPostgresRepository
   implements ICreateAccountRepository, ILoadAccountByEmailRepository {
   private accountRepository: Repository<Account>;
 
-  // constructor() {
-  //   this.accountRepository = getRepository(Account);
-  // }
+  constructor(private readonly decripter: IDecrypter) {}
 
   async create(account: CreateAccountType): Promise<IAccount> {
     const { email, password, name } = account;

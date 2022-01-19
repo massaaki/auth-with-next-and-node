@@ -12,7 +12,7 @@ const makeDbAuthentication = (): DbAuthentication => {
   const jwtAdapter = new JwtAdapter(env.jwtSecret);
   const bcrypterAdapter = new BcryptAdapter();
 
-  const accountPostgresRepository = new AccountPostgresRepository();
+  const accountPostgresRepository = new AccountPostgresRepository(jwtAdapter);
   const accountsTokenRepository = new AccountsTokensRepository();
 
   return new DbAuthentication(

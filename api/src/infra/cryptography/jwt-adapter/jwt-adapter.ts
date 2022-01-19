@@ -22,7 +22,15 @@ export class JwtAdapter implements IEncrypter, IDecrypter {
 
   async decrypt(token: string): Promise<any> {
     const value: any = jwt.verify(token, this.secret);
-
-    return value;
+    if (value) {
+      const { exp } = value;
+      const expDate = new Date((exp as number) * 1000);
+      const currentDate = new Date();
+      const expired = expDate.getTime() - currentDate.getTime() < 0;
+      if (!expired) {
+        return value;
+      }
+    }
+    return null;
   }
 }

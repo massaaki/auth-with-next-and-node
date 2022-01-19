@@ -6,6 +6,7 @@ import { IHttpRequest } from "@/presentation/protocols/http";
 export const adaptRoute = (controller: IController) => {
   return async (req: Request, res: Response) => {
     const httpRequest: IHttpRequest = {
+      user: req?.user,
       body: req.body,
     };
     const httpResponse = await controller.handle(httpRequest);
